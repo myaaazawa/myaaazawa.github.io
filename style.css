@@ -1,0 +1,505 @@
+/* 色・文字の設定はここでまとめて変えられます */
+:root {
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --text: #2b2b2b;
+  --text-sub: #6b6b6b;
+  --line: #e2e2de;
+  /* テーマカラー（ミント→エメラルドの縦グラデーション） */
+  --theme-top: #3dc2ad;
+  --theme-bottom: #46c89b;
+  --theme: #42c5a4;
+  --theme-grad: linear-gradient(180deg, var(--theme-top), var(--theme-bottom));
+  --on-theme: #0e3a31;       /* テーマカラーの上に乗せる文字の色（白だと読みにくいため濃い緑） */
+  --accent: #17735f;         /* 白い背景の上で使う、文字用の濃いめの緑 */
+  --accent-soft: #e3f6f0;
+  --radius: 14px;
+  --font: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "Meiryo", sans-serif;
+}
+
+/* ダークモードの色。
+   ふだんは端末の設定に合わせ、右上のボタンで選んだときは html の data-theme が優先されます。 */
+:root { color-scheme: light; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #1b1c1c;
+    --surface: #252727;
+    --text: #ececea;
+    --text-sub: #a3a3a0;
+    --line: #3a3c3b;
+    --accent: #5fd6bc;
+    --accent-soft: #1e3a34;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1b1c1c;
+  --surface: #252727;
+  --text: #ececea;
+  --text-sub: #a3a3a0;
+  --line: #3a3c3b;
+  --accent: #5fd6bc;
+  --accent-soft: #1e3a34;
+}
+
+/* ライト／ダークの切り替えボタン（ページの右上） */
+.theme-toggle {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.theme-toggle:hover { color: var(--accent); border-color: var(--theme); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* 今が明るいときは月（暗くする）、暗いときは太陽（明るくする）を出す */
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle[aria-pressed="true"] .icon-sun { display: block; }
+.theme-toggle[aria-pressed="true"] .icon-moon { display: none; }
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.8;
+  -webkit-text-size-adjust: 100%;
+}
+
+.page {
+  position: relative;         /* 右上の切り替えボタンの基準 */
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 16px 32px;
+}
+
+/* ---- タイトル ---- */
+.intro { text-align: center; margin-bottom: 32px; }
+.lead { color: var(--text-sub); margin: 0; }
+
+/* ---- ロゴ：上に小さな英字、下に丸みのある文字 ---- */
+.intro h1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 0 0 8px;
+  font-family: "Zen Maru Gothic", var(--font);
+  font-weight: 700;
+  font-size: 2.1rem;
+  line-height: 1.25;           /* 本文の行間(1.8)のままだと縦に間延びするため詰める */
+  letter-spacing: 0.08em;
+}
+.logo-sub {
+  font-family: "Quicksand", sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  letter-spacing: 0.4em;
+  margin-right: -0.4em;        /* 字間のぶん、右にずれないように */
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---- アバターと会話 ---- */
+.talk { margin-bottom: 48px; }
+
+.avatar-frame {
+  display: flex;
+  justify-content: center;
+  margin-bottom: -18px;       /* ウィンドウに少し重ねる */
+  position: relative;
+  z-index: 0;
+}
+.avatar {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 50%;
+  background: #fff;
+  border: 4px solid var(--theme);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  flex: none;
+  animation: enter 0.3s ease-out;
+  transition: width 0.25s ease, height 0.25s ease, opacity 0.25s ease;
+}
+@keyframes enter {
+  from { opacity: 0; transform: translateY(12px); }
+}
+
+/* アバターを並べる舞台。1人でも2人でも高さが変わらないようにして、下の会話がずれないようにする */
+.avatar-stage {
+  height: 228px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+}
+/* 2人のとき：しゃべっている方を大きく、もう1人を小さく控えめに */
+/* 2人のときは少し重ねて大きく見せる。しゃべっている方が手前に来る */
+.avatar-stage.is-pair { gap: 0; }
+.avatar-stage.is-pair .avatar {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  opacity: 0.6;
+}
+.avatar-stage.is-pair .avatar + .avatar { margin-left: -28px; }
+.avatar-stage.is-pair .avatar.speaking {
+  z-index: 1;
+  width: 210px;
+  height: 210px;
+  opacity: 1;
+}
+
+/* アバターの切り替えボタン（左右の端。左＝前のアバター、右＝次のアバター） */
+.avatar-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+.avatar-nav-prev { left: 0; }
+.avatar-nav-next { right: 0; }
+.avatar-nav-faces {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.avatar-nav-faces img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+/* 2人組のボタンは、ボタンを横長にして、2つの丸い顔を少し重ねて並べる */
+.avatar-nav.is-pair {
+  width: 84px;
+  border: none;
+  background: transparent;
+}
+.avatar-nav-faces.is-pair { display: flex; align-items: center; }
+.avatar-nav-faces.is-pair img {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--line);
+  background: #fff;
+}
+.avatar-nav-faces.is-pair img + img { margin-left: -14px; }
+.avatar-nav-faces.is-pair img:first-child { position: relative; z-index: 1; }
+/* 向きが分かるように、外側に小さな矢印の丸を付ける */
+.avatar-nav-arrow {
+  position: absolute;
+  z-index: 2;                 /* 顔の画像より手前に出す */
+  bottom: -4px;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--theme-grad);
+  color: var(--on-theme);
+  box-shadow: 0 0 0 2px var(--surface);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+.avatar-nav-prev .avatar-nav-arrow { left: -4px; }
+.avatar-nav-next .avatar-nav-arrow { right: -4px; }
+.avatar-nav:hover { opacity: 1; border-color: var(--theme); }
+.avatar-nav:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; opacity: 1; }
+
+.avatar.talking { animation: bob 0.35s ease-out; }
+@keyframes bob {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+.message-window {
+  position: relative;
+  z-index: 1;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 20px 16px;
+  min-height: 150px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+.message-window:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.speaker {
+  position: absolute;
+  top: -13px;
+  left: 16px;
+  background: var(--theme-grad);
+  color: var(--on-theme);
+  box-shadow: 0 0 0 2px var(--surface);   /* 背景がテーマカラーでも埋もれないように縁取り */
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 2px 12px;
+  border-radius: 999px;
+}
+
+/* 音のオン・オフ（メッセージウィンドウの右上） */
+.sound-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-sub);
+  cursor: pointer;
+}
+.sound-toggle:hover { background: var(--accent-soft); color: var(--accent); }
+.sound-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sound-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sound-toggle .icon-off { display: none; }
+.sound-toggle[aria-pressed="false"] .icon-on { display: none; }
+.sound-toggle[aria-pressed="false"] .icon-off { display: block; }
+
+.message {
+  margin: 4px 36px 0 0;   /* 右上の音ボタンに文字が重ならないように */
+  min-height: 3.6em;
+  white-space: pre-wrap;
+}
+
+.next-mark {
+  position: absolute;
+  right: 18px;
+  bottom: 10px;
+  font-size: 0.7rem;
+  color: var(--theme);
+  animation: blink 1s steps(2, start) infinite;
+}
+@keyframes blink { to { visibility: hidden; } }
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.choices:empty { display: none; }
+.choice {
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 6px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+.choice:hover { border-color: var(--theme); }
+.choice:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---- 見出し ---- */
+h2 {
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  color: var(--text-sub);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 6px;
+  margin: 0 0 16px;
+}
+
+/* ---- 自己紹介 ---- */
+.profile { margin-bottom: 48px; }
+.profile p { margin: 0 0 12px; white-space: pre-line; }
+
+/* ---- アプリ ---- */
+.apps { margin-bottom: 48px; }
+.app-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+.app-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+.app-card:hover { border-color: var(--theme); }
+.app-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.app-thumb {
+  width: 100%;
+  aspect-ratio: 1200 / 630;
+  object-fit: cover;
+  display: block;
+  border-bottom: 1px solid var(--line);
+}
+.app-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px 14px;
+  flex: 1;
+}
+.app-name { font-weight: 600; }
+.app-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 4px; }
+.app-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.app-text { color: var(--text-sub); font-size: 0.85rem; line-height: 1.6; flex: 1; }
+.app-open { color: var(--accent); font-size: 0.85rem; font-weight: 600; margin-top: 6px; }
+
+/* ---- リンク一覧 ---- */
+.links { margin-bottom: 48px; }
+.link-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.link-list a {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+.link-list a:hover { border-color: var(--theme); }
+.link-list a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.link-name { font-weight: 600; }
+.link-note { color: var(--text-sub); font-size: 0.85rem; flex: 1; }
+.link-arrow { margin-left: auto; color: var(--text-sub); }
+
+/* ---- フッター ---- */
+.footer { text-align: center; color: var(--text-sub); }
+
+/* ---- テーマカラーの飾り：ページ上の細い帯 ---- */
+body { border-top: 6px solid var(--theme-top); }
+
+/* ---- 吹き出し（アバター切り替えボタンにマウスを乗せたときに出る名前） ----
+   ブラウザ標準の吹き出しの代わり。名札と同じテーマカラーの丸い形にそろえる。
+   文字は script.js がボタンの data-tip に入れる。 */
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  z-index: 5;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--theme-grad);
+  color: var(--on-theme);
+  box-shadow: 0 0 0 2px var(--surface), 0 4px 12px rgba(0, 0, 0, 0.12);
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s, transform 0.15s;
+}
+/* マウスのある端末ではマウスを乗せたとき、キーボードでは選んだときに出す
+   （スマホでタップしたあと出たままにならないように、hover はマウスのときだけ） */
+@media (hover: hover) {
+  [data-tip]:hover::after { opacity: 1; transform: translate(-50%, 0); }
+}
+[data-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+
+/* 画面の端にあるボタンは、はみ出さないように吹き出しの位置をずらす */
+.avatar-nav-prev[data-tip]::after { left: 0; transform: translate(0, 4px); }
+.avatar-nav-next[data-tip]::after { left: auto; right: 0; transform: translate(0, 4px); }
+@media (hover: hover) {
+  .avatar-nav-prev[data-tip]:hover::after,
+  .avatar-nav-next[data-tip]:hover::after { transform: translate(0, 0); }
+}
+.avatar-nav-prev[data-tip]:focus-visible::after,
+.avatar-nav-next[data-tip]:focus-visible::after { transform: translate(0, 0); }
+
+@media (max-width: 480px) {
+  .page { padding-top: 32px; }
+  .intro h1 { font-size: 1.8rem; }
+  .avatar { width: 180px; height: 180px; }
+  .avatar-stage { height: 188px; gap: 8px; }
+  .avatar-stage.is-pair .avatar { width: 104px; height: 104px; }
+  .avatar-stage.is-pair .avatar + .avatar { margin-left: -24px; }
+  .avatar-stage.is-pair .avatar.speaking { width: 152px; height: 152px; }
+  .avatar-nav { width: 52px; height: 52px; }
+  .avatar-nav.is-pair { width: 68px; }
+  .avatar-nav-faces.is-pair img { width: 40px; height: 40px; }
+  .avatar-nav-faces.is-pair img + img { margin-left: -12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar, .avatar.talking, .next-mark, [data-tip]::after { animation: none; transition: none; }
+}
