@@ -308,9 +308,17 @@ body {
 .sound-toggle[aria-pressed="false"] .icon-off { display: block; }
 
 .message {
-  margin: 4px 36px 0 0;   /* 右上の音ボタンに文字が重ならないように */
+  margin: 4px 0 0;
   min-height: 3.6em;
   white-space: pre-wrap;
+  text-align: justify;    /* 1文字分に満たない余りを字間に配って、右端を左端とそろえる */
+}
+/* 右上の音ボタンと重なる1行目だけ、右側をあける（2行目からは左と同じ幅まで使う） */
+.message::before {
+  content: "";
+  float: right;
+  width: 24px;
+  height: 1.5em;
 }
 
 .next-mark {
