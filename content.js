@@ -40,9 +40,23 @@ const CONTENT = {
   // name: 表示名 / url: リンク先 / note: 小さく添える説明（なくてもよい）
   links: [
     { name: "X", url: "https://x.com/Miyazawa2020", note: "@Miyazawa2020" },
-    { name: "Xfolio", url: "https://xfolio.jp/portfolio/myaaazawa", note: "myaaazawa" },
-    { name: "GitHub", url: "https://github.com/myaaazawa", note: "myaaazawa" },
-    { name: "Bluesky", url: "https://bsky.app/profile/myaaazawa.bsky.social", note: "@myaaazawa.bsky.social" },
+    { name: "Xfolio", url: "https://xfolio.jp/portfolio/myaaazawa", note: "myaaazawa　イラスト" },
+    { name: "GitHub", url: "https://github.com/myaaazawa", note: "myaaazawa　アプリ・ウェブサイト" },
+    { name: "Bluesky", url: "https://bsky.app/profile/myaaazawa.bsky.social", note: "@myaaazawa.bsky.social　私的な投稿" },
+  ],
+
+  // ---- ほかの人のリンク ----
+  // 自分のリンクとは別の見出しで、リンク一覧の下に出します。人を増やすときは { ... }, のまとまりをコピーして足します。
+  // title: 見出し / text: 見出しの下に出す短い説明（なくてもよい） / links: 書き方は上のリンク一覧と同じ
+  friendLinks: [
+    {
+      title: "すずのリンク",
+      text: "ビジュアルを担当したVライバーのアカウントです",
+      links: [
+        { name: "X", url: "https://x.com/suzumenosuzu33", note: "@suzumenosuzu33" },
+        { name: "IRIAM", url: "https://web.iriam.app/s/user/8Ex0dSGcH2", note: "配信アプリ" },
+      ],
+    },
   ],
 
   footer: "© 2026 みゃ～ざわ",
@@ -103,9 +117,10 @@ const CONTENT = {
       alt: "みゃ～ざわのアバター",
       faces: {
         normal: "images/avatar.png",
-        sweat: "images/avatar-sweat.png",   // 目をそらして汗（ごまかし・あせり）
+        sweat: "images/avatar-sweat.png",   // 焦り
         closed: "images/avatar-closed.png", // 目を閉じて口を開ける（しみじみ・ふふん）
         smile: "images/avatar-smile.png",   // 目を閉じてにっこり笑う
+        cloud: "images/avatar-cloud.png",   // 表情が曇る
       },
       voice: 3,
       talkHome: "question",
@@ -177,7 +192,7 @@ const CONTENT = {
         food: {
           lines: ["特に好きなのはうどん、焼きそばかなぁ。あとはキムチ、パエリア、スープ各種、ひつまぶし、酢だこ、酢いか、ニジマスやアユの塩焼き、シーザーサラダ、アイス、桃、柿……。"],
           choices: [
-            { label: "好きな飲み物は？", next: "drink" },
+            { label: "好きな飲み物は？", next: "drink" }, { label: "嫌いな食べ物は？", next: "nofood" },
           ],
         },
         drink: {
@@ -186,10 +201,24 @@ const CONTENT = {
             { label: "他のことも教えて", next: "know" },
           ],
           },
+        nofood: {
+          lines: [{text:"パクチー、生ねぎ、生玉ねぎ、わさび、からし、みょうが。薬っぽい味が苦手な傾向……。",face: "cloud"},],
+          choices: [
+            { label: "他のことも教えて", next: "know" },
+          ],
+          },
         anime: {
-          lines: ["輪るピングドラム、ケロロ軍曹、イナズマイレブン、鋼の錬金術師、魔法少女まどか☆マギカ、さよならの朝に約束の花を飾ろう、プリンセスプリキュア。",
+          lines: ["輪るピングドラム、ケロロ軍曹、イナズマイレブン、鋼の錬金術師、魔法少女まどか☆マギカ、さよならの朝に約束の花を飾ろう、刀語、プリンセスプリキュア。",
             "他にハマってたのは……。SHOW BY ROCK!!、おジャ魔女どれみ、少女革命ウテナ、ガンダムBF、天元突破グレンラガン、パンティ&ストッキングwithガーターベルト、ハイキュー！！、BANANA FISH、PSYCHO-PASS、進撃の巨人、とか……。",
             "あ、ディズニー・ピクサー作品の中だと、リメンバーミーが一番好き！　次にトイ・ストーリーかな。\n実写アニメーション作品だけど、ロジャーラビット、メリーポピンズも好き。"
+          ],
+          choices: [
+            { label: "漫画は読む？", next: "manga" },{ label: "他のことも教えて", next: "know" },
+          ],
+        },
+        manga: {
+          lines: ["昔はちゃお、コロコロコミック、少年ガンガンを読んでたけど、今はあんまり。\n漫画を読むときは、アニメから興味を持って読み始めることが多いね。ケロロ軍曹、鋼の錬金術師、ハイキューとか。",
+            "他に読んでる漫画（読んだことがある漫画）で好きなのは、異種族レビュアーズ、絶体絶命でんぢゃらすじーさん、ソウルイーター、銀魂、HUNTER×HUNTER、赤髪の白雪姫かな。",
           ],
           choices: [
             { label: "他のことも教えて", next: "know" },
@@ -269,7 +298,7 @@ const CONTENT = {
       },
     },
 
-    // 2人目のキャラクター：リナ（セリフは仮）
+    // 2人目のキャラクター：リナ
     {
       name: "リナ",
       alt: "リナのイラスト",
@@ -313,7 +342,7 @@ const CONTENT = {
       },
     },
 
-    // 3人目のキャラクター：アンジュ
+    // 3人目のキャラクター：アンジュ：2人組「アンジュ＆アンジェ」にだけ出る（hidden: true なので、ひとりでは切り替えに出てこない）
     {
       name: "アンジュ",
       alt: "アンジュのイラスト",
@@ -325,7 +354,7 @@ const CONTENT = {
       talkHome: "question",
       talk: { },
     },
-    // アンジェ：2人組「アンジュ＆アンジェ」にだけ出る（hidden: true なので、ひとりでは切り替えに出てこない）
+    // 4人目のキャラクター：アンジェ：2人組「アンジュ＆アンジェ」にだけ出る（hidden: true なので、ひとりでは切り替えに出てこない）
     {
       name: "アンジェ",
       alt: "アンジェのイラスト",
@@ -363,9 +392,15 @@ const CONTENT = {
             { who: "アンジュ", text: "生えてます！　人間じゃないので！　何の種族だと思いますか～？　正解は～……。" },
             { who: "アンジュ", text: "サキュバスで～す！　きゃは♡　ほんとですよ！　びっくりしました～？" },
             ],
-          choices: [{ label: "もっと質問する", next: "ask" }],
+          choices: [{ label: "もっと質問する", next: "ask1" }],
           },
-          ask: {
+          ask1: {   //前の会話がアンジュで終わってたらこっち
+          lines: [
+            { who: "アンジュ", text: "は～い♡　なんですか～？" },
+            ],
+          choices: [{ label: "年齢は？", next: "age" },{ label: "趣味は？", next: "fun" },{ label: "好みの異性は？", next: "type" }],
+          },
+          ask2: {   //前の会話がアンジェで終わってたらこっち
           lines: [
             { who: "アンジェ", text: "はい、なんでしょうか……？" },
             ],
@@ -378,14 +413,14 @@ const CONTENT = {
             { who: "アンジュ", text: "そうそう！　シールは集めて、二人で交換こするのが楽しい♪\n最近はカプセルトイもアツいよね！　可愛いのがいっぱい♡" },
             { who: "アンジェ", text: "ね。何にお小遣いを使うか迷っちゃう……。" },
             ],
-            choices: [{ label: "もっと聞きたい", next: "ask" }],
+            choices: [{ label: "もっと聞きたい", next: "ask2" }],
             },
           age: {
           lines: [
             { who: "アンジュ", text: "え～？　女の子にそういうこと聞かないでください！　1919歳ってことでいいですか～？" },
             { who: "アンジェ", text: "大嘘……。" },
             ],
-            choices: [{ label: "もっと聞きたい", next: "ask" }],
+            choices: [{ label: "もっと聞きたい", next: "ask2" }],
             },
           type: {
           lines: [
@@ -394,12 +429,12 @@ const CONTENT = {
             { who: "アンジュ", text: "あ、そうだ！　精力絶倫なのは外せない！！　アンもそうでしょ？" },
             { who: "アンジェ", text: "え？\nた、体力はあった方がいいよね……。" },
             ],
-            choices: [{ label: "もっと聞きたい", next: "ask" }],
+            choices: [{ label: "もっと聞きたい", next: "ask2" }],
         },
       },
     },
 
-    // 5人目のキャラクター：すず（セリフは仮）
+    // 5人目のキャラクター：すず（セリフ本人監修）
     {
       name: "すず",
       alt: "すずのイラスト",

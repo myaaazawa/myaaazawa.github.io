@@ -27,7 +27,12 @@
     const text = document.createElement("span");
     text.className = "logo-text";
     text.setAttribute("aria-hidden", "true");
-    text.textContent = CONTENT.title;
+    // フォントの「～」はほかの文字より細く先がとがっているので、太さと丸みをそろえた波線の絵に置き換える
+    CONTENT.title.split(/([～〜])/).forEach((part, i) => {
+      if (i % 2 === 0) { text.append(part); return; }
+      text.insertAdjacentHTML("beforeend",
+        '<svg class="logo-wave" viewBox="0 0 100 100"><path d="M13 55 C 26 38, 38 38, 50 52 S 74 66, 87 49"/></svg>');
+    });
     h1.append(sub, text);
 
     // ロゴ用の文字（Googleフォント）を、タイトルに使う文字だけ読み込む（軽くするため）
@@ -97,7 +102,7 @@
   }
   if (!(CONTENT.apps || []).length) document.querySelector(".apps").hidden = true;
 
-  for (const link of CONTENT.links) {
+  function makeLinkItem(link) {
     const li = document.createElement("li");
     const a = document.createElement("a");
     a.href = link.url;
@@ -119,8 +124,31 @@
     arrow.textContent = "↗";
     a.appendChild(arrow);
     li.appendChild(a);
-    $("link-list").appendChild(li);
+    return li;
   }
+  for (const link of CONTENT.links) $("link-list").appendChild(makeLinkItem(link));
+
+  // ほかの人のリンク：1人ずつ、自分のリンクとは別の見出しを付けて並べる
+  (CONTENT.friendLinks || []).forEach((group, i) => {
+    const section = document.createElement("section");
+    section.className = "links friend-links";
+    section.setAttribute("aria-labelledby", "friend-links-heading-" + i);
+    const h2 = document.createElement("h2");
+    h2.id = "friend-links-heading-" + i;
+    h2.textContent = group.title;
+    section.appendChild(h2);
+    if (group.text) {
+      const p = document.createElement("p");
+      p.className = "friend-links-text";
+      p.textContent = group.text;
+      section.appendChild(p);
+    }
+    const ul = document.createElement("ul");
+    ul.className = "link-list";
+    for (const link of group.links) ul.appendChild(makeLinkItem(link));
+    section.appendChild(ul);
+    $("friend-links").appendChild(section);
+  });
 
   // ---- ライト／ダークの切り替え ----
   // 最初は端末の設定に合わせる。ボタンで選んだら、その選択を覚えておく。

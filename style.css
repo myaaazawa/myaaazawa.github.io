@@ -121,6 +121,20 @@ body {
   text-transform: uppercase;
   color: var(--accent);
 }
+/* タイトルの「～」の代わりの波線（文字と同じ大きさ・色・太さ） */
+.logo-wave {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.08em;        /* h1 の字間と同じだけあける */
+  vertical-align: -0.12em;
+  overflow: visible;
+}
+.logo-wave path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 12;
+  stroke-linecap: round;
+}
 
 /* ---- アバターと会話 ---- */
 .talk { margin-bottom: 48px; }
@@ -445,6 +459,7 @@ h2 {
 .link-name { font-weight: 600; }
 .link-note { color: var(--text-sub); font-size: 0.85rem; flex: 1; }
 .link-arrow { margin-left: auto; color: var(--text-sub); }
+.friend-links-text { margin: 0 0 12px; color: var(--text-sub); font-size: 0.85rem; }
 
 /* ---- フッター ---- */
 .footer { text-align: center; color: var(--text-sub); }
