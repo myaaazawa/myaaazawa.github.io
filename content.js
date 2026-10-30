@@ -39,10 +39,10 @@ const CONTENT = {
   // ---- リンク一覧 ----
   // name: 表示名 / url: リンク先 / note: 小さく添える説明（なくてもよい）
   links: [
-    { name: "X", url: "https://x.com/Miyazawa2020", note: "@Miyazawa2020" },
-    { name: "Xfolio", url: "https://xfolio.jp/portfolio/myaaazawa", note: "myaaazawa　イラスト" },
-    { name: "GitHub", url: "https://github.com/myaaazawa", note: "myaaazawa　アプリ・ウェブサイト" },
-    { name: "Bluesky", url: "https://bsky.app/profile/myaaazawa.bsky.social", note: "@myaaazawa.bsky.social　私的な投稿" },
+    { name: "X", url: "https://x.com/Miyazawa2020", note: "旧Twitter" },
+    { name: "Xfolio", url: "https://xfolio.jp/portfolio/myaaazawa", note: "イラスト" },
+    { name: "GitHub", url: "https://github.com/myaaazawa", note: "アプリ・ウェブサイト" },
+    { name: "Bluesky", url: "https://bsky.app/profile/myaaazawa.bsky.social", note: "私的な投稿" },
   ],
 
   // ---- ほかの人のリンク ----
